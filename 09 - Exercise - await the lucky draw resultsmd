@@ -1,4 +1,4 @@
-# 08 - Exercise - Promises lucky draw
+# 08 - Exercise - await the lucky draw results
 
 Create agetResults function that uses async and await. Inside of the function, call the luckyDraw function for each of the players: Tina, Jorge, Julien
 
