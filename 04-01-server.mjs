@@ -10,7 +10,9 @@ const server = createServer((request, response) => {
   // response.end(
   //   "<html><body><h1>This page was served with Node.js!</h1></body></html>"
   // );
-  response.end("<html><body><h1>Here is my web server</h1></body></html>");
+  response.end(
+    "<html><body><h1>Here is the response from my web server</h1></body></html>"
+  );
 });
 
 server.listen(3000, () => {
