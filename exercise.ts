@@ -20,4 +20,4 @@ luckyDraw("Joe")
   .then((luckyDrawPlayer2) => console.log(luckyDrawPlayer2))
   .then(() => luckyDraw("Sabrina"))
   .then((luckyDrawPlayer3) => console.log(luckyDrawPlayer3))
-  .catch((error: Error) => console.error(error));
+  .catch((error) => console.error(error));
