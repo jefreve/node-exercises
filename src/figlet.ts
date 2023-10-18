@@ -1,4 +1,4 @@
-import figlet from "figlet";
+import figlet = require("figlet");
 
 figlet(
   "Artistic banner",
