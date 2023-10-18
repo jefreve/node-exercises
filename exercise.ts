@@ -1,4 +1,4 @@
-function luckyDraw(player: string): Promise<string> {
+function luckyDraw(player: string): Promise<string | Error> {
   return new Promise((resolve, reject) => {
     const win: boolean = Boolean(Math.round(Math.random()));
 
@@ -11,19 +11,21 @@ function luckyDraw(player: string): Promise<string> {
     });
   });
 }
+// Players: Tina, Jorge, Julien
 
 async function getResults(): Promise<void> {
-  try {
-    const results = await Promise.all([
+  const results: PromiseSettledResult<string | Error>[] =
+    await Promise.allSettled([
       luckyDraw("Tina"),
       luckyDraw("Jorge"),
       luckyDraw("Julien"),
     ]);
 
-    results.forEach((result) => console.log(result));
-  } catch (error) {
-    console.error(error);
-  }
+  results.forEach((result) =>
+    result.status === "fulfilled"
+      ? console.log(result.value)
+      : console.log(`Error: ${result.reason.message}`)
+  );
 }
 
 getResults();

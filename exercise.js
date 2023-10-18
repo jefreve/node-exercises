@@ -47,27 +47,25 @@ function luckyDraw(player) {
         });
     });
 }
+// Players: Tina, Jorge, Julien
 function getResults() {
     return __awaiter(this, void 0, void 0, function () {
-        var results, error_1;
+        var results;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, Promise.all([
-                            luckyDraw("Tina"),
-                            luckyDraw("Jorge"),
-                            luckyDraw("Julien"),
-                        ])];
+                case 0: return [4 /*yield*/, Promise.allSettled([
+                        luckyDraw("Tina"),
+                        luckyDraw("Jorge"),
+                        luckyDraw("Julien"),
+                    ])];
                 case 1:
                     results = _a.sent();
-                    results.forEach(function (result) { return console.log(result); });
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    console.error(error_1);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    results.forEach(function (result) {
+                        return result.status === "fulfilled"
+                            ? console.log(result.value)
+                            : console.log("Error: ".concat(result.reason.message));
+                    });
+                    return [2 /*return*/];
             }
         });
     });
