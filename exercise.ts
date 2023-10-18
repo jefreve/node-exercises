@@ -1,4 +1,4 @@
-function luckyDraw(player: string): Promise<string> {
+function luckyDraw(player: string): Promise<string | Error> {
   return new Promise((resolve, reject) => {
     const win: boolean = Boolean(Math.round(Math.random()));
 
@@ -15,9 +15,9 @@ function luckyDraw(player: string): Promise<string> {
 // Players: Joe, Caroline, Sabrina
 
 luckyDraw("Joe")
-  .then((luckyDrawPlayer1: string) => console.log(luckyDrawPlayer1))
+  .then((luckyDrawPlayer1) => console.log(luckyDrawPlayer1))
   .then(() => luckyDraw("Caroline"))
-  .then((luckyDrawPlayer2: string) => console.log(luckyDrawPlayer2))
+  .then((luckyDrawPlayer2) => console.log(luckyDrawPlayer2))
   .then(() => luckyDraw("Sabrina"))
-  .then((luckyDrawPlayer3: string) => console.log(luckyDrawPlayer3))
+  .then((luckyDrawPlayer3) => console.log(luckyDrawPlayer3))
   .catch((error: Error) => console.error(error));
