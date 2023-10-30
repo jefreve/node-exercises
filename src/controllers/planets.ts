@@ -1,39 +1,23 @@
 import { Request, Response } from 'express'
 import Joi from 'joi'
+import db from '../index'
 
-type Planet = {
-  id: number
-  name: string
-}
-
-type Planets = Planet[]
-
-let planets: Planets = [
-  {
-    id: 1,
-    name: 'Venus',
-  },
-  {
-    id: 2,
-    name: 'Mercury',
-  },
-  {
-    id: 3,
-    name: 'Saturn',
-  },
-]
-const getAll = (req: Request, res: Response) => {
+const getAll = async (req: Request, res: Response) => {
   try {
-    res.status(200).json(planets)
+    const planets = await db.manyOrNone(`SELECT * FROM planets;`)
+    if (planets.length) res.status(200).json(planets)
+    else {
+      res.status(200).json({ msg: 'There are no planets' })
+    }
   } catch (error: any) {
     console.error(error.message)
   }
 }
 
-const getOneById = (req: Request, res: Response) => {
+const getOneById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const planet = planets.find((planet) => planet.id === Number(id))
+    const planet = await db.oneOrNone(`SELECT * FROM planets WHERE id = $1`, id)
     res.status(200).json(planet)
   } catch (error: any) {
     console.error(error.message)
@@ -41,37 +25,34 @@ const getOneById = (req: Request, res: Response) => {
 }
 
 const planetSchema = Joi.object({
-  id: Joi.number().integer().required(),
   name: Joi.string().required(),
 })
 
-const create = (req: Request, res: Response) => {
+const create = async (req: Request, res: Response) => {
   try {
-    const { id, name } = req.body
-    const newPlanet = { id, name }
+    const { name } = req.body
+    const newPlanet = { name }
     const validatedNewPlanet = planetSchema.validate(newPlanet)
     if (validatedNewPlanet.error) {
       res.status(400).json({ msg: 'Planet format is not valid' })
     } else {
-      planets = [...planets, newPlanet]
+      await db.none(`INSERT INTO planets (name) VALUES ($1);`, name)
       res.status(201).json({ msg: 'Planet was created' })
     }
   } catch (error: any) {
     console.error(error.message)
   }
 }
-const updateById = (req: Request, res: Response) => {
+const updateById = async (req: Request, res: Response) => {
   try {
     const { name } = req.body
     const { id } = req.params
-    const validatedName = Joi.string().validate(name)
-    console.log(validatedName)
+    const newPlanet = { name }
+    const validatedName = planetSchema.validate(newPlanet)
     if (validatedName.error) {
       res.status(400).json({ msg: 'Planet name must be a string' })
     } else {
-      planets = planets.map((planet) =>
-        planet.id === Number(id) ? { ...planet, name } : planet
-      )
+      await db.none(`UPDATE planets SET name = $1 WHERE id = $2;`, [name, id])
       res.status(200).json({ msg: 'Planet updated' })
     }
   } catch (error: any) {
@@ -79,12 +60,14 @@ const updateById = (req: Request, res: Response) => {
   }
 }
 
-const deleteById = (req: Request, res: Response) => {
+const deleteById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const found = planets.find((planet) => planet.id === Number(id))
-    if (found) {
-      planets = planets.filter((planet) => planet.id !== Number(id))
+    const deletedPlanet = await db.oneOrNone(
+      `DELETE FROM planets WHERE id = $1 RETURNING *`,
+      id
+    )
+    if (deletedPlanet) {
       res.status(200).json({ msg: 'planet deleted' })
     } else {
       res.status(400).json({ msg: "id doesn't exist" })

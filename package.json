@@ -18,6 +18,7 @@
     "express-async-errors": "^3.1.1",
     "joi": "^17.11.0",
     "morgan": "^1.10.0",
+    "pg-promise": "^11.5.4",
     "undici-types": "^5.27.0"
   },
   "devDependencies": {
