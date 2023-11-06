@@ -53,8 +53,13 @@ const create = (req: Request, res: Response) => {
     if (validatedNewPlanet.error) {
       res.status(400).json({ msg: 'Planet format is not valid' })
     } else {
-      planets = [...planets, newPlanet]
-      res.status(201).json({ msg: 'Planet was created' })
+      const idAlreadyExist = planets.find((p) => p.id === Number(id))
+      if (idAlreadyExist) {
+        res.status(400).json({ msg: 'Id already exist' })
+      } else {
+        planets = [...planets, newPlanet]
+        res.status(201).json({ msg: 'Planet was created' })
+      }
     }
   } catch (error: any) {
     console.error(error.message)
