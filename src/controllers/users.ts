@@ -40,10 +40,10 @@ const signUp = async (req: Request, res: Response) => {
   if (user) {
     res.status(409).json({ msg: "Username already exists." });
   } else {
-    const { id } = await db.one(
-      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id",
-      [username, password]
-    );
+    await db.none("INSERT INTO users (username, password) VALUES ($1, $2)", [
+      username,
+      password,
+    ]);
     res.status(201).json({ msg: "Signup successful. Now you can log in." });
   }
 };
